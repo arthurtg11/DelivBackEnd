@@ -1,9 +1,10 @@
 package com.application.controller;
 
 import com.application.config.FbrRequestData;
+import com.application.domain.TabUrna;
 import com.application.domain.TabUser;
 import com.application.domain.dto.UserInfoDTO;
-import com.application.service.UserService;
+import com.application.service.UrnaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/configNoAuth")
 @RequiredArgsConstructor
-public class AuthController {
+public class GeralController {
 
-    public static final String TOKEN_SENHA = "463408a1-54c9-4307-bb1c-6cced559f5a7";
 
     @Autowired
-    private final UserService userService;
+    private final UrnaService userService;
 
     @Autowired
     FbrRequestData requestData;
@@ -31,10 +31,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<UserInfoDTO> getUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-
-
         UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setStrCod(requestData.getStrCod());
         userInfoDTO.setUsnCod(requestData.getUsnCod());
         TabUser user = TabUser.findById(requestData.getUsnCod());
         userInfoDTO.setUsnDesUsername(user.getUsnDesUsername());
@@ -43,6 +40,11 @@ public class AuthController {
 
 
         return ResponseEntity.ok().body(userInfoDTO);
+    }
+
+    @GetMapping("/urna/stats")
+    public ResponseEntity<TabUrna> getUrnaStats() throws Exception {
+        return ResponseEntity.ok().body(TabUrna.findById(1L));
     }
 }
 

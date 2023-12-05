@@ -43,7 +43,7 @@ public abstract class FbrControllerTest {
     }
 
     protected void createAuth() {
-        this.username = "fbrDelivery@gmail.com";
+        this.username = "admin";
     }
 
     protected void createAuth(String username) {
@@ -55,7 +55,6 @@ public abstract class FbrControllerTest {
         String access_token = JWT.create().withSubject(this.username) //
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 1000)) //
                 .withIssuer("teste") //
-                .withClaim("strCod", 1L) //
                 .withClaim("usnCod", 1L) //
                 .sign(algorithm);
 

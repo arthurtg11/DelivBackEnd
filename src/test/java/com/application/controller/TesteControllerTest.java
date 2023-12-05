@@ -8,23 +8,14 @@ import org.springframework.test.annotation.Rollback;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-class DashboardControllerTest extends FbrControllerTest {
-
-    private static final String BASE = "/api/dashboard";
-
-    public DashboardDTO findByIdAndReturn() throws Exception {
-        return resultConvertClass(
-                getRequest(BASE)
-                        .andExpect(status().isOk()), DashboardDTO.class);
-    }
+class TesteControllerTest extends FbrControllerTest {
 
     @Test
     @Rollback
     public void findById() throws Exception {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        System.out.println(bCryptPasswordEncoder.encode("atg123"));
+        System.out.println(bCryptPasswordEncoder.encode("11"));
         createAuth();
-        findByIdAndReturn();
     }
 }
 

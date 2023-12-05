@@ -11,21 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 @Configuration
 public class FbrConfig {
-    /* Novas variaveis aqui, adicionar na classe FbrConfiguration */
-
     @Value("${fbr.config.token.senha}")
     private String tokenSenha;
-
-    @Value("${cloudinary.cloud.name}")
-    private String cloudinaryName;
-
-    @Value("${cloudinary.apiKey}")
-    private String cloudinaryApiKey;
-
-    @Value("${cloudinary.secretKey}")
-    private String cloudinarySecretKey;
-
-    @Value("${cloudinary.url}")
-    private String cloudinaryUrl;
 
 }

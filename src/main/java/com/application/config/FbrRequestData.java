@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class FbrRequestData {
 
-    public Long getStrCod() {
-        return FbrUtils.getParamJWT("strCod");
-    }
-
     public Long getUsnCod() {
         return FbrUtils.getParamJWT("usnCod");
     }

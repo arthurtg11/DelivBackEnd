@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -51,32 +52,9 @@ public class FbrDAO<T extends FbrModel> {
     /*
      * FindById
      */
+    @Transactional
     protected static <T extends FbrModel> T executeFindById(Class<T> t, ListRequest listRequest) throws Exception {
         var list = executeQueryList(t, listRequest);
-
-        if (list.isEmpty())
-            throw new FindByIDNotFoundException();
-
-        if (list.size() > 1)
-            throw new TooManyRollsException();
-
-        return (T) list.get(0);
-    }
-
-    protected static <T extends FbrModel> T executeFindById(String sql, Class<T> t, ListRequest listRequest) throws Exception {
-        var list = executeQueryList(sql, t, listRequest);
-
-        if (list.isEmpty())
-            throw new FindByIDNotFoundException();
-
-        if (list.size() > 1)
-            throw new TooManyRollsException();
-
-        return (T) list.get(0);
-    }
-
-    protected static <T extends FbrModel> T executeFindById(String sql, Class<T> t, Map<String, Object> params) throws Exception {
-        var list = executeQueryList(sql, t, params);
 
         if (list.isEmpty())
             throw new FindByIDNotFoundException();
@@ -90,19 +68,18 @@ public class FbrDAO<T extends FbrModel> {
     /*
      * GetCount
      */
+    @Transactional
     protected static <T extends FbrModel> Long executeGetCount(Class<T> t, ListRequest listRequest) {
         String sql = "SELECT * FROM " + convertJavaNamesToSql(t.getSimpleName());
         return executeGetCount(sql, listRequest);
     }
 
+    @Transactional
     protected static Long executeGetCount(String sql, ListRequest listRequest) {
         return executeGetCount(sql, listRequest, new HashMap<>());
     }
 
-    protected static Long executeGetCount(String sql, Map<String, Object> params) {
-        return executeGetCount(sql, new ListRequest(), params);
-    }
-
+    @Transactional
     protected static Long executeGetCount(String sql, ListRequest listRequest, Map<String, Object> params) {
         sql = addRequestParamsInSql(sql, listRequest, true);
 
@@ -124,19 +101,18 @@ public class FbrDAO<T extends FbrModel> {
     /*
      * QueryList
      */
+    @Transactional
     protected static <T extends FbrModel> List<T> executeQueryList(Class<T> t, ListRequest listRequest) {
         String sql = "SELECT * FROM " + convertJavaNamesToSql(t.getSimpleName());
         return executeQueryList(sql, t, listRequest);
     }
 
+    @Transactional
     protected static <T extends FbrModel> List<T> executeQueryList(String sql, Class<T> t, ListRequest listRequest) {
         return executeQueryList(sql, t, listRequest, new HashMap<>());
     }
 
-    protected static <T extends FbrModel> List<T> executeQueryList(String sql, Class<T> t, Map<String, Object> params) {
-        return executeQueryList(sql, t, new ListRequest(), params);
-    }
-
+    @Transactional
     protected static <T extends FbrModel> List<T> executeQueryList(String sql, Class<T> t, ListRequest listRequest, Map<String, Object> params) {
         sql = addRequestParamsInSql(sql, listRequest);
 
@@ -157,10 +133,12 @@ public class FbrDAO<T extends FbrModel> {
     /*
      * Build Query
      */
+    @Transactional
     private static String addRequestParamsInSql(String sql, ListRequest listRequest) {
         return addRequestParamsInSql(sql, listRequest, false);
     }
 
+    @Transactional
     private static String addRequestParamsInSql(String sql, ListRequest listRequest, boolean getCount) {
         var builder = new StringBuilder("SELECT " + (getCount ? "COUNT(1) AS RESULT_COUNT" : "*") + " FROM ( " + sql + " ) WHERE 1 = 1");
 
@@ -232,6 +210,7 @@ public class FbrDAO<T extends FbrModel> {
         return parameters;
     }
 
+    @Transactional
     public static <T extends FbrModel> Long executeInsert(String sql, String[] keys, T t) throws Exception {
         var params = generateParameters(t);
         log.info(sql);
@@ -241,9 +220,12 @@ public class FbrDAO<T extends FbrModel> {
         return keyHolder.getKey().longValue();
     }
 
+    @Transactional
     protected static <T extends FbrModel> void executeUpdate(String sql, T t) throws Exception {
         var params = generateParameters(t);
-        log.info(sql);
+        sql = "BEGIN \n" + sql;
+        sql = sql + ";\n commit; \n END;";
+        System.out.println(sql);
         params.getValues().forEach((key, value) -> log.info(key + ":" + value));
         namedParameterJdbcTemplate.update(sql, params);
     }

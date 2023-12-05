@@ -17,7 +17,7 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService implements UserDetailsService {
+public class GeralService implements UserDetailsService {
 
     @Override
     @Transactional
