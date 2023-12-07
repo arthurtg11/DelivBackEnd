@@ -36,10 +36,13 @@ public class UrnaService {
     @Transactional
     public ResponseEntity<TabCandidatos> findCandidato(Long canNumNumero, Long canVldTipo) throws Exception {
         //O numero do canditado é unico, então o findList smp retorna 1.
-        return ResponseEntity.ok().body(TabCandidatos.findList(ListRequest.createListRequest() //
-                        .addFilter("canNumNumero", canNumNumero) //
-                        .addFilter("canVldTipo", canVldTipo)) //
-                .get(0));
+        var candidates = TabCandidatos.findList(ListRequest.createListRequest() //
+                .addFilter("canNumNumero", canNumNumero) //
+                .addFilter("canVldTipo", canVldTipo));
+        if (candidates.isEmpty())
+            throw new RuntimeException("Voto Nulo");
+
+        return ResponseEntity.ok().body(candidates.get(0));
     }
 
     @Transactional
@@ -50,7 +53,7 @@ public class UrnaService {
             throw new RuntimeException("Usuario já votou.");
 
         if (votes.getVotes().size() > 3)
-            throw new RuntimeException("Voto Invalido, permitido somente 2 votos, senador e presidente.");
+            throw new RuntimeException("Voto Invalido, permitido somente 3 votos, 2 votos para senador e 1 voto para presidente.");
 
         //Não permite q o usuario vote duas vezes no mesmo candidato, considera NULO.
         var votos = votes.getVotes().stream()

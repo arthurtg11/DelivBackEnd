@@ -37,6 +37,9 @@ public class TabUser extends FbrModel {
     @ValidatorEnum(enumBase = ESimNao.class)
     private Long usnVldVotou;
 
+    @ValidatorLong
+    private Long urnCod;
+
     public static Long getCount(ListRequest listRequest) {
         return TabUserDAO.getCount(listRequest);
     }

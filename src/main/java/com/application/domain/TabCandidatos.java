@@ -41,6 +41,9 @@ public class TabCandidatos extends FbrModel {
     @ValidatorString(maxSize = 255)
     private String canDesPhoto;
 
+    @ValidatorLong
+    private Long urnCod;
+
 
     public static Long getCount(ListRequest listRequest) {
         return TabUserDAO.getCount(listRequest);

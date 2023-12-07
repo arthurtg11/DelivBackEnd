@@ -79,7 +79,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 tokens.put("candidatos", candidatos);
                 tokens.put("eleitores", eleitores.size());
 
-                for (TabCandidatos c : candidatos) {
+                var candidatos2 = TabCandidatos.findList(ListRequest.createListRequest());
+
+                for (TabCandidatos c : candidatos2) {
                     c.setCanNumVotos(0L);
                     c.update();
                 }
